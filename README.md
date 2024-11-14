@@ -1,4 +1,4 @@
-# **Energy Evolution - A Clicker Game (Just Bored in Class)**
+# **Energy Evolution - A Clicker Game (Just Bored in Class With AI)**
 
 ## **Project Description**
 
