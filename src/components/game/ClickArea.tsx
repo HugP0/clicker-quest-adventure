@@ -3,9 +3,10 @@ import { motion } from "framer-motion";
 
 interface ClickAreaProps {
   onClick: () => void;
+  multiplier?: number;
 }
 
-export const ClickArea = ({ onClick }: ClickAreaProps) => {
+export const ClickArea = ({ onClick, multiplier = 1 }: ClickAreaProps) => {
   const [clickPosition, setClickPosition] = useState({ x: 0, y: 0 });
 
   const handleClick = (e: React.MouseEvent) => {
@@ -38,7 +39,7 @@ export const ClickArea = ({ onClick }: ClickAreaProps) => {
           transition={{ duration: 0.5 }}
           className="absolute w-5 h-5 text-game-primary pointer-events-none"
         >
-          +1
+          +{multiplier}
         </motion.div>
       )}
     </div>

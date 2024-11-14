@@ -5,7 +5,8 @@ export interface Upgrade {
   description: string;
   owned: number;
   multiplier: number;
-  type: 'autoClicker' | 'multiplier';
+  type: 'autoClicker' | 'multiplier' | 'booster';
+  duration?: number; // Duration in seconds for temporary boosters
 }
 
 export interface GameState {
@@ -14,4 +15,19 @@ export interface GameState {
   autoClickerPoints: number;
   level: number;
   totalPointsEarned: number;
+  activeMultipliers: {
+    value: number;
+    expiresAt: number;
+  }[];
+  lastLoginDate?: string;
+  consecutiveLogins: number;
+}
+
+export interface DailyReward {
+  day: number;
+  reward: {
+    type: 'points' | 'multiplier' | 'booster';
+    value: number;
+    duration?: number;
+  };
 }
