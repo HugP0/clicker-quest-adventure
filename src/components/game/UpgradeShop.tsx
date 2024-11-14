@@ -16,8 +16,8 @@ interface UpgradeShopProps {
 
 export const UpgradeShop = ({ upgrades, onPurchase, canAfford }: UpgradeShopProps) => {
   return (
-    <div className="glass-card p-6 w-full max-w-md">
-      <h2 className="text-xl font-bold mb-4 text-game-accent">Upgrades</h2>
+    <div className="glass-card p-6 w-full max-w-md bg-amber-950/20">
+      <h2 className="text-xl font-bold mb-4 text-amber-200">Cookie Upgrades</h2>
       <div className="space-y-4">
         {upgrades.map((upgrade) => (
           <motion.button
@@ -25,7 +25,7 @@ export const UpgradeShop = ({ upgrades, onPurchase, canAfford }: UpgradeShopProp
             onClick={() => onPurchase(upgrade.id)}
             className={`w-full glass-card p-4 text-left transition-colors ${
               canAfford(upgrade.cost)
-                ? "hover:bg-white/20"
+                ? "hover:bg-amber-800/20"
                 : "opacity-50 cursor-not-allowed"
             }`}
             whileHover={canAfford(upgrade.cost) ? { scale: 1.02 } : {}}
@@ -33,12 +33,12 @@ export const UpgradeShop = ({ upgrades, onPurchase, canAfford }: UpgradeShopProp
           >
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-medium text-game-primary">{upgrade.name}</h3>
-                <p className="text-sm text-game-accent">{upgrade.description}</p>
+                <h3 className="font-medium text-amber-400">{upgrade.name}</h3>
+                <p className="text-sm text-amber-200">{upgrade.description}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-game-neutral">Cost: {upgrade.cost}</p>
-                <p className="text-xs text-game-accent">Owned: {upgrade.owned}</p>
+                <p className="text-sm text-amber-300">Cost: {upgrade.cost}</p>
+                <p className="text-xs text-amber-200">Owned: {upgrade.owned}</p>
               </div>
             </div>
           </motion.button>
