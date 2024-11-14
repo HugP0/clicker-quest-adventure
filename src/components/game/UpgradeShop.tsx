@@ -1,44 +1,40 @@
 import { motion } from "framer-motion";
-
-interface Upgrade {
-  id: string;
-  name: string;
-  cost: number;
-  description: string;
-  owned: number;
-}
+import { PowerPlant } from "@/types/powerPlant";
 
 interface UpgradeShopProps {
-  upgrades: Upgrade[];
+  powerPlants: PowerPlant[];
   onPurchase: (id: string) => void;
   canAfford: (cost: number) => boolean;
 }
 
-export const UpgradeShop = ({ upgrades, onPurchase, canAfford }: UpgradeShopProps) => {
+export const UpgradeShop = ({ powerPlants, onPurchase, canAfford }: UpgradeShopProps) => {
   return (
     <div className="glass-card p-6 w-full max-w-md bg-amber-950/20">
-      <h2 className="text-xl font-bold mb-4 text-amber-200">Cookie Upgrades</h2>
+      <h2 className="text-xl font-bold mb-4 text-yellow-200">Power Plants</h2>
       <div className="space-y-4">
-        {upgrades.map((upgrade) => (
+        {powerPlants.map((plant) => (
           <motion.button
-            key={upgrade.id}
-            onClick={() => onPurchase(upgrade.id)}
+            key={plant.id}
+            onClick={() => onPurchase(plant.id)}
             className={`w-full glass-card p-4 text-left transition-colors ${
-              canAfford(upgrade.cost)
+              canAfford(plant.cost)
                 ? "hover:bg-amber-800/20"
                 : "opacity-50 cursor-not-allowed"
             }`}
-            whileHover={canAfford(upgrade.cost) ? { scale: 1.02 } : {}}
-            whileTap={canAfford(upgrade.cost) ? { scale: 0.98 } : {}}
+            whileHover={canAfford(plant.cost) ? { scale: 1.02 } : {}}
+            whileTap={canAfford(plant.cost) ? { scale: 0.98 } : {}}
           >
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-medium text-amber-400">{upgrade.name}</h3>
-                <p className="text-sm text-amber-200">{upgrade.description}</p>
+                <h3 className="font-medium text-yellow-400">{plant.name}</h3>
+                <p className="text-sm text-yellow-200">{plant.description}</p>
+                <p className="text-xs text-yellow-200">
+                  Production: {plant.baseProduction} MW | Impact: {plant.pollutionImpact}
+                </p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-amber-300">Cost: {upgrade.cost}</p>
-                <p className="text-xs text-amber-200">Owned: {upgrade.owned}</p>
+                <p className="text-sm text-yellow-300">Cost: {plant.cost}</p>
+                <p className="text-xs text-yellow-200">Owned: {plant.owned}</p>
               </div>
             </div>
           </motion.button>
