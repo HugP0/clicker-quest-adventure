@@ -1,15 +1,23 @@
 import { motion } from "framer-motion";
 import { PowerPlant } from "@/types/powerPlant";
 import { Button } from "@/components/ui/button";
+import { Power } from "lucide-react";
 
 interface UpgradeShopProps {
   powerPlants: PowerPlant[];
   onPurchase: (id: string) => void;
   onUpgrade: (id: string) => void;
+  onToggleAuto: (id: string) => void;
   canAfford: (cost: number) => boolean;
 }
 
-export const UpgradeShop = ({ powerPlants, onPurchase, onUpgrade, canAfford }: UpgradeShopProps) => {
+export const UpgradeShop = ({ 
+  powerPlants, 
+  onPurchase, 
+  onUpgrade, 
+  onToggleAuto,
+  canAfford 
+}: UpgradeShopProps) => {
   return (
     <div className="glass-card p-6 w-full max-w-md bg-amber-950/20">
       <h2 className="text-xl font-bold mb-4 text-yellow-200">Power Plants</h2>
@@ -45,14 +53,23 @@ export const UpgradeShop = ({ powerPlants, onPurchase, onUpgrade, canAfford }: U
                   Buy (${plant.cost})
                 </Button>
                 {plant.owned > 0 && (
-                  <Button
-                    onClick={() => onUpgrade(plant.id)}
-                    disabled={!canAfford(plant.upgradeCost)}
-                    className="flex-1"
-                    variant="outline"
-                  >
-                    Upgrade (${plant.upgradeCost})
-                  </Button>
+                  <>
+                    <Button
+                      onClick={() => onUpgrade(plant.id)}
+                      disabled={!canAfford(plant.upgradeCost)}
+                      className="flex-1"
+                      variant="outline"
+                    >
+                      Upgrade (${plant.upgradeCost})
+                    </Button>
+                    <Button
+                      onClick={() => onToggleAuto(plant.id)}
+                      variant={plant.autoProducing ? "default" : "outline"}
+                      size="icon"
+                    >
+                      <Power className={plant.autoProducing ? "text-yellow-200" : "text-yellow-500"} />
+                    </Button>
+                  </>
                 )}
               </div>
             </div>

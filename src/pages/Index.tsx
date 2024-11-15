@@ -2,16 +2,22 @@ import { useState } from "react";
 import { ClickArea } from "@/components/game/ClickArea";
 import { ResourceCounter } from "@/components/game/ResourceCounter";
 import { UpgradeShop } from "@/components/game/UpgradeShop";
-import { Earth } from "@/components/game/Earth";
 import { useGameState } from "@/components/game/GameStateManager";
 import { Progress } from "@/components/ui/progress";
 
-const POINTS_PER_LEVEL = 1000; // Increased from 100 to 1000
+const POINTS_PER_LEVEL = 1000;
 
 const Index = () => {
   const [points, setPoints] = useState(0);
   const [level, setLevel] = useState(1);
-  const { powerPlants, environment, money, purchasePowerPlant, upgradePowerPlant } = useGameState();
+  const { 
+    powerPlants, 
+    environment, 
+    money, 
+    purchasePowerPlant, 
+    upgradePowerPlant,
+    toggleAutoProduction 
+  } = useGameState();
 
   const handleClick = () => {
     const pointsEarned = powerPlants.reduce((acc, plant) => 
@@ -29,44 +35,38 @@ const Index = () => {
     });
   };
 
-  const handlePurchase = (id: string) => {
-    purchasePowerPlant(id);
-  };
-
-  const handleUpgrade = (id: string) => {
-    upgradePowerPlant(id);
-  };
-
-  const progressToNextLevel = (points % POINTS_PER_LEVEL) / POINTS_PER_LEVEL * 100;
-
   return (
-    <div className="min-h-screen p-4 flex flex-col items-center justify-center gap-8">
-      <div className="text-center space-y-4">
-        <ResourceCounter 
-          energy={points}
-          money={money}
-          renewablePercentage={environment.renewablePercentage}
-        />
-        <div className="glass-card px-4 py-2">
-          <p className="text-xl font-bold text-yellow-400">Level {level}</p>
-          <Progress value={progressToNextLevel} className="w-48 mt-2" />
+    <div className="min-h-screen p-4">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-8">
+          <ResourceCounter 
+            energy={points}
+            money={money}
+            renewablePercentage={environment.renewablePercentage}
+          />
+          <div className="glass-card p-4 space-y-2">
+            <p className="text-sm text-yellow-200">Environmental Impact</p>
+            <Progress value={environment.pollutionLevel} className="h-2" />
+            <p className="text-xs text-yellow-200">
+              Pollution Level: {environment.pollutionLevel}%
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <ClickArea 
+              onClick={handleClick} 
+              environmentalState={environment.visualState}
+            />
+          </div>
         </div>
-      </div>
-      
-      <div className="flex flex-col items-center gap-8">
-        <Earth environmentalState={environment.visualState} />
-        <ClickArea 
-          onClick={handleClick} 
-          environmentalState={environment.visualState}
+        
+        <UpgradeShop
+          powerPlants={powerPlants}
+          onPurchase={purchasePowerPlant}
+          onUpgrade={upgradePowerPlant}
+          onToggleAuto={toggleAutoProduction}
+          canAfford={(cost) => money >= cost}
         />
       </div>
-      
-      <UpgradeShop
-        powerPlants={powerPlants}
-        onPurchase={handlePurchase}
-        onUpgrade={handleUpgrade}
-        canAfford={(cost) => money >= cost}
-      />
     </div>
   );
 };

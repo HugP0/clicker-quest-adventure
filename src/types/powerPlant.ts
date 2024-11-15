@@ -11,6 +11,7 @@ export interface PowerPlant {
   owned: number;
   upgradeLevel: number;
   upgradeCost: number;
+  autoProducing: boolean;
 }
 
 export interface EnvironmentalState {

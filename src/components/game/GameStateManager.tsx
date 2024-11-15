@@ -7,73 +7,53 @@ const INITIAL_POWER_PLANTS: PowerPlant[] = [
     id: "coal",
     name: "Coal Power Plant",
     type: "coal",
-    baseProduction: 10,
+    baseProduction: 2,
     pollutionImpact: 5,
     cost: 10,
     description: "Basic power generation, high pollution",
     owned: 0,
     upgradeLevel: 1,
-    upgradeCost: 50
-  },
-  {
-    id: "hydro",
-    name: "Hydroelectric Dam",
-    type: "hydro",
-    baseProduction: 5,
-    pollutionImpact: 1,
-    cost: 50,
-    description: "Clean energy from flowing water",
-    owned: 0,
-    upgradeLevel: 1,
-    upgradeCost: 100
+    upgradeCost: 50,
+    autoProducing: false
   },
   {
     id: "solar",
     name: "Solar Farm",
     type: "solar",
-    baseProduction: 3,
+    baseProduction: 1,
     pollutionImpact: 0,
     cost: 30,
     description: "Renewable energy from sunlight",
     owned: 0,
     upgradeLevel: 1,
-    upgradeCost: 75
+    upgradeCost: 75,
+    autoProducing: false
   },
   {
     id: "nuclear",
     name: "Nuclear Plant",
     type: "nuclear",
-    baseProduction: 50,
+    baseProduction: 10,
     pollutionImpact: 2,
     cost: 200,
     description: "High energy output, moderate pollution",
     owned: 0,
     upgradeLevel: 1,
-    upgradeCost: 300
+    upgradeCost: 300,
+    autoProducing: false
   },
   {
     id: "wind",
     name: "Wind Farm",
     type: "wind",
-    baseProduction: 2,
+    baseProduction: 1,
     pollutionImpact: 0,
     cost: 20,
     description: "Clean but low output energy",
     owned: 0,
     upgradeLevel: 1,
-    upgradeCost: 40
-  },
-  {
-    id: "geothermal",
-    name: "Geothermal Plant",
-    type: "geothermal",
-    baseProduction: 15,
-    pollutionImpact: 1,
-    cost: 150,
-    description: "Steady clean energy from Earth's heat",
-    owned: 0,
-    upgradeLevel: 1,
-    upgradeCost: 225
+    upgradeCost: 40,
+    autoProducing: false
   }
 ];
 
@@ -91,11 +71,11 @@ export const useGameState = () => {
       acc + (plant.pollutionImpact * plant.owned * plant.upgradeLevel), 0);
     
     const totalProduction = powerPlants.reduce((acc, plant) => 
-      acc + (plant.baseProduction * plant.owned * plant.upgradeLevel), 0);
+      acc + (plant.baseProduction * plant.owned * plant.upgradeLevel * (plant.autoProducing ? 1 : 0)), 0);
     
     const renewableProduction = powerPlants
-      .filter(plant => ['solar', 'hydro', 'wind', 'geothermal'].includes(plant.type))
-      .reduce((acc, plant) => acc + (plant.baseProduction * plant.owned * plant.upgradeLevel), 0);
+      .filter(plant => ['solar', 'wind'].includes(plant.type))
+      .reduce((acc, plant) => acc + (plant.baseProduction * plant.owned * plant.upgradeLevel * (plant.autoProducing ? 1 : 0)), 0);
 
     setEnvironment({
       pollutionLevel: totalPollution,
@@ -103,15 +83,28 @@ export const useGameState = () => {
       visualState: totalPollution > 50 ? 'polluted' : totalPollution < 20 ? 'clean' : 'neutral'
     });
 
-    // Generate money based on total production
-    const moneyGenerated = Math.floor(totalProduction * 0.1);
-    setMoney(prev => prev + moneyGenerated);
+    if (totalProduction > 0) {
+      const moneyGenerated = Math.floor(totalProduction * 0.1);
+      setMoney(prev => prev + moneyGenerated);
+    }
   };
 
   useEffect(() => {
     const interval = setInterval(calculateEnvironmentalImpact, 1000);
     return () => clearInterval(interval);
   }, [powerPlants]);
+
+  const toggleAutoProduction = (id: string) => {
+    setPowerPlants(prev => prev.map(plant => 
+      plant.id === id 
+        ? { ...plant, autoProducing: !plant.autoProducing }
+        : plant
+    ));
+    const plant = powerPlants.find(p => p.id === id);
+    if (plant) {
+      toast.success(`${plant.name} auto-production ${!plant.autoProducing ? 'enabled' : 'disabled'}!`);
+    }
+  };
 
   const purchasePowerPlant = (id: string) => {
     const plant = powerPlants.find(p => p.id === id);
@@ -123,7 +116,7 @@ export const useGameState = () => {
         ? { 
             ...plant, 
             owned: plant.owned + 1,
-            cost: Math.floor(plant.cost * 1.15) // Increase cost by 15% for each purchase
+            cost: Math.floor(plant.cost * 1.15)
           }
         : plant
     ));
@@ -141,7 +134,7 @@ export const useGameState = () => {
         ? { 
             ...plant, 
             upgradeLevel: plant.upgradeLevel + 1,
-            upgradeCost: Math.floor(plant.upgradeCost * 1.5) // Increase upgrade cost by 50%
+            upgradeCost: Math.floor(plant.upgradeCost * 1.5)
           }
         : plant
     ));
@@ -154,6 +147,7 @@ export const useGameState = () => {
     environment,
     money,
     purchasePowerPlant,
-    upgradePowerPlant
+    upgradePowerPlant,
+    toggleAutoProduction
   };
 };
