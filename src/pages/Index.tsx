@@ -2,19 +2,20 @@ import { useState } from "react";
 import { ClickArea } from "@/components/game/ClickArea";
 import { ResourceCounter } from "@/components/game/ResourceCounter";
 import { UpgradeShop } from "@/components/game/UpgradeShop";
+import { Earth } from "@/components/game/Earth";
 import { useGameState } from "@/components/game/GameStateManager";
 import { Progress } from "@/components/ui/progress";
 
-const POINTS_PER_LEVEL = 100;
+const POINTS_PER_LEVEL = 1000; // Increased from 100 to 1000
 
 const Index = () => {
   const [points, setPoints] = useState(0);
   const [level, setLevel] = useState(1);
-  const { powerPlants, environment, purchasePowerPlant } = useGameState();
+  const { powerPlants, environment, money, purchasePowerPlant, upgradePowerPlant } = useGameState();
 
   const handleClick = () => {
     const pointsEarned = powerPlants.reduce((acc, plant) => 
-      acc + (plant.baseProduction * plant.owned), 1);
+      acc + (plant.baseProduction * plant.owned * plant.upgradeLevel), 1);
     
     setPoints(prev => {
       const newPoints = prev + pointsEarned;
@@ -29,11 +30,11 @@ const Index = () => {
   };
 
   const handlePurchase = (id: string) => {
-    const plant = powerPlants.find(p => p.id === id);
-    if (!plant || points < plant.cost) return;
-    
-    setPoints(prev => prev - plant.cost);
     purchasePowerPlant(id);
+  };
+
+  const handleUpgrade = (id: string) => {
+    upgradePowerPlant(id);
   };
 
   const progressToNextLevel = (points % POINTS_PER_LEVEL) / POINTS_PER_LEVEL * 100;
@@ -42,24 +43,29 @@ const Index = () => {
     <div className="min-h-screen p-4 flex flex-col items-center justify-center gap-8">
       <div className="text-center space-y-4">
         <ResourceCounter 
-          amount={points} 
-          renewablePercentage={environment.renewablePercentage} 
+          energy={points}
+          money={money}
+          renewablePercentage={environment.renewablePercentage}
         />
         <div className="glass-card px-4 py-2">
-          <p className="text-sm text-yellow-400">Level {level}</p>
-          <Progress value={progressToNextLevel} className="w-32 mt-2" />
+          <p className="text-xl font-bold text-yellow-400">Level {level}</p>
+          <Progress value={progressToNextLevel} className="w-48 mt-2" />
         </div>
       </div>
       
-      <ClickArea 
-        onClick={handleClick} 
-        environmentalState={environment.visualState}
-      />
+      <div className="flex flex-col items-center gap-8">
+        <Earth environmentalState={environment.visualState} />
+        <ClickArea 
+          onClick={handleClick} 
+          environmentalState={environment.visualState}
+        />
+      </div>
       
       <UpgradeShop
         powerPlants={powerPlants}
         onPurchase={handlePurchase}
-        canAfford={(cost) => points >= cost}
+        onUpgrade={handleUpgrade}
+        canAfford={(cost) => money >= cost}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-export type PowerPlantType = 'coal' | 'hydro' | 'solar' | 'nuclear' | 'geothermal';
+export type PowerPlantType = 'coal' | 'hydro' | 'solar' | 'nuclear' | 'geothermal' | 'wind';
 
 export interface PowerPlant {
   id: string;
@@ -9,6 +9,8 @@ export interface PowerPlant {
   cost: number;
   description: string;
   owned: number;
+  upgradeLevel: number;
+  upgradeCost: number;
 }
 
 export interface EnvironmentalState {
