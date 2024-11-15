@@ -1,0 +1,41 @@
+{
+  "game": {
+    "energy": "Energy Generated",
+    "money": "Money",
+    "renewable": "Renewable",
+    "environmental_impact": "Environmental Impact",
+    "pollution_level": "Pollution Level",
+    "loading": "Loading..."
+  },
+  "powerPlants": {
+    "coal": {
+      "name": "Coal Power Plant",
+      "description": "Basic power generation, high pollution"
+    },
+    "solar": {
+      "name": "Solar Farm",
+      "description": "Renewable energy from sunlight"
+    },
+    "nuclear": {
+      "name": "Nuclear Plant",
+      "description": "High energy output, moderate pollution"
+    },
+    "wind": {
+      "name": "Wind Farm",
+      "description": "Clean but low output energy"
+    },
+    "geothermal": {
+      "name": "Geothermal Plant",
+      "description": "Sustainable energy from Earth's heat"
+    },
+    "hydro": {
+      "name": "Hydro Dam",
+      "description": "Clean energy from water flow"
+    }
+  },
+  "actions": {
+    "buy": "Buy",
+    "upgrade": "Upgrade",
+    "auto": "Auto"
+  }
+}

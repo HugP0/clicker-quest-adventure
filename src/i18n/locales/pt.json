@@ -1,0 +1,41 @@
+{
+  "game": {
+    "energy": "Energia Gerada",
+    "money": "Dinheiro",
+    "renewable": "Renovável",
+    "environmental_impact": "Impacto Ambiental",
+    "pollution_level": "Nível de Poluição",
+    "loading": "Carregando..."
+  },
+  "powerPlants": {
+    "coal": {
+      "name": "Usina de Carvão",
+      "description": "Geração básica, alta poluição"
+    },
+    "solar": {
+      "name": "Fazenda Solar",
+      "description": "Energia renovável do sol"
+    },
+    "nuclear": {
+      "name": "Usina Nuclear",
+      "description": "Alta produção, poluição moderada"
+    },
+    "wind": {
+      "name": "Parque Eólico",
+      "description": "Energia limpa de baixa produção"
+    },
+    "geothermal": {
+      "name": "Usina Geotérmica",
+      "description": "Energia sustentável do calor terrestre"
+    },
+    "hydro": {
+      "name": "Hidrelétrica",
+      "description": "Energia limpa do fluxo de água"
+    }
+  },
+  "actions": {
+    "buy": "Comprar",
+    "upgrade": "Melhorar",
+    "auto": "Auto"
+  }
+}

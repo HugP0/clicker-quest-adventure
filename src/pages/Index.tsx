@@ -1,19 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { ClickArea } from "@/components/game/ClickArea";
 import { ResourceCounter } from "@/components/game/ResourceCounter";
 import { UpgradeShop } from "@/components/game/UpgradeShop";
 import { useGameState } from "@/components/game/GameStateManager";
 import { Progress } from "@/components/ui/progress";
+import { LoadingScreen } from "@/components/game/LoadingScreen";
+import { LanguageSelector } from "@/components/game/LanguageSelector";
 
 const POINTS_PER_LEVEL = 1000;
 
 const Index = () => {
   const [points, setPoints] = useState(0);
   const [level, setLevel] = useState(1);
+  const { t } = useTranslation();
   const { 
     powerPlants, 
     environment, 
     money, 
+    isLoading,
     purchasePowerPlant, 
     upgradePowerPlant,
     toggleAutoProduction 
@@ -35,37 +40,47 @@ const Index = () => {
     });
   };
 
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
-    <div className="min-h-screen p-4">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-8">
-          <ResourceCounter 
-            energy={points}
-            money={money}
-            renewablePercentage={environment.renewablePercentage}
-          />
-          <div className="glass-card p-4 space-y-2">
-            <p className="text-sm text-yellow-200">Environmental Impact</p>
-            <Progress value={environment.pollutionLevel} className="h-2" />
-            <p className="text-xs text-yellow-200">
-              Pollution Level: {environment.pollutionLevel}%
-            </p>
-          </div>
-          <div className="flex justify-center">
-            <ClickArea 
-              onClick={handleClick} 
-              environmentalState={environment.visualState}
-            />
-          </div>
+    <div className="min-h-screen p-4 bg-gradient-to-b from-amber-900/20 to-amber-950/40">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex justify-end mb-4">
+          <LanguageSelector />
         </div>
         
-        <UpgradeShop
-          powerPlants={powerPlants}
-          onPurchase={purchasePowerPlant}
-          onUpgrade={upgradePowerPlant}
-          onToggleAuto={toggleAutoProduction}
-          canAfford={(cost) => money >= cost}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-8">
+            <ResourceCounter 
+              energy={points}
+              money={money}
+              renewablePercentage={environment.renewablePercentage}
+            />
+            <div className="glass-card p-4 space-y-2">
+              <p className="text-sm text-yellow-200">{t('game.environmental_impact')}</p>
+              <Progress value={environment.pollutionLevel} className="h-2" />
+              <p className="text-xs text-yellow-200">
+                {t('game.pollution_level')}: {environment.pollutionLevel}%
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <ClickArea 
+                onClick={handleClick} 
+                environmentalState={environment.visualState}
+              />
+            </div>
+          </div>
+          
+          <UpgradeShop
+            powerPlants={powerPlants}
+            onPurchase={purchasePowerPlant}
+            onUpgrade={upgradePowerPlant}
+            onToggleAuto={toggleAutoProduction}
+            canAfford={(cost) => money >= cost}
+          />
+        </div>
       </div>
     </div>
   );

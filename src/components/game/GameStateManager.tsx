@@ -54,6 +54,32 @@ const INITIAL_POWER_PLANTS: PowerPlant[] = [
     upgradeLevel: 1,
     upgradeCost: 40,
     autoProducing: false
+  },
+  {
+    id: "geothermal",
+    name: "Geothermal Plant",
+    type: "geothermal",
+    baseProduction: 5,
+    pollutionImpact: 1,
+    cost: 150,
+    description: "Sustainable energy from Earth's heat",
+    owned: 0,
+    upgradeLevel: 1,
+    upgradeCost: 225,
+    autoProducing: false
+  },
+  {
+    id: "hydro",
+    name: "Hydro Dam",
+    type: "hydro",
+    baseProduction: 3,
+    pollutionImpact: 0,
+    cost: 100,
+    description: "Clean energy from water flow",
+    owned: 0,
+    upgradeLevel: 1,
+    upgradeCost: 150,
+    autoProducing: false
   }
 ];
 
@@ -65,6 +91,12 @@ export const useGameState = () => {
     visualState: 'neutral'
   });
   const [money, setMoney] = useState(50);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate initial loading
+    setTimeout(() => setIsLoading(false), 2000);
+  }, []);
 
   const calculateEnvironmentalImpact = () => {
     const totalPollution = powerPlants.reduce((acc, plant) => 
@@ -74,7 +106,7 @@ export const useGameState = () => {
       acc + (plant.baseProduction * plant.owned * plant.upgradeLevel * (plant.autoProducing ? 1 : 0)), 0);
     
     const renewableProduction = powerPlants
-      .filter(plant => ['solar', 'wind'].includes(plant.type))
+      .filter(plant => ['solar', 'wind', 'hydro'].includes(plant.type))
       .reduce((acc, plant) => acc + (plant.baseProduction * plant.owned * plant.upgradeLevel * (plant.autoProducing ? 1 : 0)), 0);
 
     setEnvironment({
@@ -146,6 +178,7 @@ export const useGameState = () => {
     powerPlants,
     environment,
     money,
+    isLoading,
     purchasePowerPlant,
     upgradePowerPlant,
     toggleAutoProduction

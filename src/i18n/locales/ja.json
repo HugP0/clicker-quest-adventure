@@ -1,0 +1,41 @@
+{
+  "game": {
+    "energy": "発電量",
+    "money": "資金",
+    "renewable": "再生可能",
+    "environmental_impact": "環境への影響",
+    "pollution_level": "汚染レベル",
+    "loading": "読み込み中..."
+  },
+  "powerPlants": {
+    "coal": {
+      "name": "石炭発電所",
+      "description": "基本的な発電、高い汚染"
+    },
+    "solar": {
+      "name": "ソーラーファーム",
+      "description": "太陽光による再生可能エネルギー"
+    },
+    "nuclear": {
+      "name": "原子力発電所",
+      "description": "高出力、適度な汚染"
+    },
+    "wind": {
+      "name": "風力発電所",
+      "description": "クリーンだが低出力"
+    },
+    "geothermal": {
+      "name": "地熱発電所",
+      "description": "地球の熱による持続可能エネルギー"
+    },
+    "hydro": {
+      "name": "水力発電所",
+      "description": "水流によるクリーンエネルギー"
+    }
+  },
+  "actions": {
+    "buy": "購入",
+    "upgrade": "アップグレード",
+    "auto": "自動"
+  }
+}
