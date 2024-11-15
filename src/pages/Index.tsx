@@ -10,7 +10,7 @@ const POINTS_PER_LEVEL = 100;
 const Index = () => {
   const [points, setPoints] = useState(0);
   const [level, setLevel] = useState(1);
-  const { powerPlants, environment, purchasePowerPlant } = useGameState();
+  const { powerPlants, environment, purchasePowerPlant, upgradePowerPlant } = useGameState();
 
   const handleClick = () => {
     const pointsEarned = powerPlants.reduce((acc, plant) => 
@@ -36,6 +36,14 @@ const Index = () => {
     purchasePowerPlant(id);
   };
 
+  const handleUpgrade = (id: string) => {
+    const plant = powerPlants.find(p => p.id === id);
+    if (!plant || points < plant.upgradeBaseCost) return;
+    
+    setPoints(prev => prev - plant.upgradeBaseCost);
+    upgradePowerPlant(id);
+  };
+
   const progressToNextLevel = (points % POINTS_PER_LEVEL) / POINTS_PER_LEVEL * 100;
 
   return (
@@ -59,6 +67,7 @@ const Index = () => {
       <UpgradeShop
         powerPlants={powerPlants}
         onPurchase={handlePurchase}
+        onUpgrade={handleUpgrade}
         canAfford={(cost) => points >= cost}
       />
     </div>
