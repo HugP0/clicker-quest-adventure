@@ -1,11 +1,13 @@
 {
   "game": {
+    "title": "Centrale Électrique Tycoon",
     "energy": "Énergie Générée",
     "money": "Argent",
     "renewable": "Renouvelable",
     "environmental_impact": "Impact Environnemental",
     "pollution_level": "Niveau de Pollution",
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "shop": "Magasin des Centrales"
   },
   "powerPlants": {
     "coal": {
@@ -13,7 +15,7 @@
       "description": "Production de base, forte pollution"
     },
     "solar": {
-      "name": "Ferme Solaire",
+      "name": "Parc Solaire",
       "description": "Énergie renouvelable solaire"
     },
     "nuclear": {
@@ -36,6 +38,9 @@
   "actions": {
     "buy": "Acheter",
     "upgrade": "Améliorer",
-    "auto": "Auto"
+    "auto": "Auto",
+    "cost": "Coût",
+    "owned": "Possédé",
+    "level": "Niveau"
   }
 }

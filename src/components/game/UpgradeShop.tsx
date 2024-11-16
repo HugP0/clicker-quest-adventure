@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { PowerPlant } from "@/types/powerPlant";
 import { Button } from "@/components/ui/button";
 import { Power } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface UpgradeShopProps {
   powerPlants: PowerPlant[];
@@ -18,9 +19,10 @@ export const UpgradeShop = ({
   onToggleAuto,
   canAfford 
 }: UpgradeShopProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="glass-card p-6 w-full max-w-md bg-amber-950/20">
-      <h2 className="text-xl font-bold mb-4 text-yellow-200">Power Plants</h2>
       <div className="space-y-4">
         {powerPlants.map((plant) => (
           <motion.div
@@ -31,16 +33,16 @@ export const UpgradeShop = ({
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium text-yellow-400">{plant.name}</h3>
-                  <p className="text-sm text-yellow-200">{plant.description}</p>
+                  <h3 className="font-medium text-yellow-400">{t(`powerPlants.${plant.id}.name`)}</h3>
+                  <p className="text-sm text-yellow-200">{t(`powerPlants.${plant.id}.description`)}</p>
                   <p className="text-xs text-yellow-200">
-                    Production: {plant.baseProduction * plant.upgradeLevel} MW | Impact: {plant.pollutionImpact}
+                    {t('game.energy')}: {plant.baseProduction * plant.upgradeLevel} MW
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-yellow-300">Cost: ${plant.cost}</p>
-                  <p className="text-xs text-yellow-200">Owned: {plant.owned}</p>
-                  <p className="text-xs text-yellow-200">Level: {plant.upgradeLevel}</p>
+                  <p className="text-sm text-yellow-300">{t('actions.cost')}: ${plant.cost}</p>
+                  <p className="text-xs text-yellow-200">{t('actions.owned')}: {plant.owned}</p>
+                  <p className="text-xs text-yellow-200">{t('actions.level')}: {plant.upgradeLevel}</p>
                 </div>
               </div>
               <div className="flex gap-2 mt-2">
@@ -50,7 +52,7 @@ export const UpgradeShop = ({
                   className="flex-1"
                   variant="outline"
                 >
-                  Buy (${plant.cost})
+                  {t('actions.buy')} (${plant.cost})
                 </Button>
                 {plant.owned > 0 && (
                   <>
@@ -60,7 +62,7 @@ export const UpgradeShop = ({
                       className="flex-1"
                       variant="outline"
                     >
-                      Upgrade (${plant.upgradeCost})
+                      {t('actions.upgrade')} (${plant.upgradeCost})
                     </Button>
                     <Button
                       onClick={() => onToggleAuto(plant.id)}

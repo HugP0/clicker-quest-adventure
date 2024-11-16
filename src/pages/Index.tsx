@@ -7,8 +7,7 @@ import { useGameState } from "@/components/game/GameStateManager";
 import { Progress } from "@/components/ui/progress";
 import { LoadingScreen } from "@/components/game/LoadingScreen";
 import { LanguageSelector } from "@/components/game/LanguageSelector";
-
-const POINTS_PER_LEVEL = 1000;
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Index = () => {
   const [points, setPoints] = useState(0);
@@ -30,7 +29,7 @@ const Index = () => {
     
     setPoints(prev => {
       const newPoints = prev + pointsEarned;
-      const newLevel = Math.floor(newPoints / POINTS_PER_LEVEL) + 1;
+      const newLevel = Math.floor(newPoints / 1000) + 1;
       
       if (newLevel > level) {
         setLevel(newLevel);
@@ -47,7 +46,11 @@ const Index = () => {
   return (
     <div className="min-h-screen p-4 bg-gradient-to-b from-amber-900/20 to-amber-950/40">
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-between items-center mb-8">
+          <div className="w-[180px]" /> {/* Spacer */}
+          <h1 className="text-4xl font-bold text-center text-yellow-400">
+            {t('game.title')}
+          </h1>
           <LanguageSelector />
         </div>
         
@@ -73,13 +76,18 @@ const Index = () => {
             </div>
           </div>
           
-          <UpgradeShop
-            powerPlants={powerPlants}
-            onPurchase={purchasePowerPlant}
-            onUpgrade={upgradePowerPlant}
-            onToggleAuto={toggleAutoProduction}
-            canAfford={(cost) => money >= cost}
-          />
+          <div className="h-[calc(100vh-12rem)]">
+            <h2 className="text-xl font-bold mb-4 text-yellow-200">{t('game.shop')}</h2>
+            <ScrollArea className="h-full pr-4">
+              <UpgradeShop
+                powerPlants={powerPlants}
+                onPurchase={purchasePowerPlant}
+                onUpgrade={upgradePowerPlant}
+                onToggleAuto={toggleAutoProduction}
+                canAfford={(cost) => money >= cost}
+              />
+            </ScrollArea>
+          </div>
         </div>
       </div>
     </div>
