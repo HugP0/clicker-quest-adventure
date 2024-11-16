@@ -94,7 +94,6 @@ export const useGameState = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate initial loading
     setTimeout(() => setIsLoading(false), 2000);
   }, []);
 
@@ -107,7 +106,8 @@ export const useGameState = () => {
     
     const renewableProduction = powerPlants
       .filter(plant => ['solar', 'wind', 'hydro'].includes(plant.type))
-      .reduce((acc, plant) => acc + (plant.baseProduction * plant.owned * plant.upgradeLevel * (plant.autoProducing ? 1 : 0)), 0);
+      .reduce((acc, plant) => 
+        acc + (plant.baseProduction * plant.owned * plant.upgradeLevel * (plant.autoProducing ? 1 : 0)), 0);
 
     setEnvironment({
       pollutionLevel: totalPollution,
@@ -116,7 +116,7 @@ export const useGameState = () => {
     });
 
     if (totalProduction > 0) {
-      const moneyGenerated = Math.floor(totalProduction * 0.1);
+      const moneyGenerated = Math.floor(totalProduction * 0.5); // Augmentation du gain d'argent
       setMoney(prev => prev + moneyGenerated);
     }
   };
@@ -132,9 +132,10 @@ export const useGameState = () => {
         ? { ...plant, autoProducing: !plant.autoProducing }
         : plant
     ));
+    
     const plant = powerPlants.find(p => p.id === id);
     if (plant) {
-      toast.success(`${plant.name} auto-production ${!plant.autoProducing ? 'enabled' : 'disabled'}!`);
+      toast.success(`${plant.name} ${!plant.autoProducing ? 'activé' : 'désactivé'} !`);
     }
   };
 
@@ -153,7 +154,7 @@ export const useGameState = () => {
         : plant
     ));
     
-    toast.success(`New ${plant.name} constructed!`);
+    toast.success(`Nouvelle ${plant.name} construite !`);
   };
 
   const upgradePowerPlant = (id: string) => {
@@ -171,7 +172,7 @@ export const useGameState = () => {
         : plant
     ));
     
-    toast.success(`${plant.name} upgraded to level ${plant.upgradeLevel + 1}!`);
+    toast.success(`${plant.name} améliorée au niveau ${plant.upgradeLevel + 1} !`);
   };
 
   return {

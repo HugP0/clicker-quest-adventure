@@ -17,10 +17,14 @@ export const LanguageSelector = () => {
     { code: 'ja', name: '日本語' }
   ];
 
+  const handleLanguageChange = (value: string) => {
+    i18n.changeLanguage(value);
+  };
+
   return (
     <Select
-      value={i18n.language}
-      onValueChange={(value) => i18n.changeLanguage(value)}
+      defaultValue={i18n.language}
+      onValueChange={handleLanguageChange}
     >
       <SelectTrigger className="w-[180px] bg-amber-950/20 text-yellow-200 border-yellow-500/20">
         <SelectValue placeholder="Select language" />
