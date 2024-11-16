@@ -9,6 +9,25 @@
     "loading": "Chargement...",
     "shop": "Magasin des Centrales"
   },
+  "market": {
+    "title": "Marché de l'Énergie",
+    "current_price": "Prix Actuel",
+    "demand": "Demande",
+    "trend": "Tendance",
+    "sell_energy": "Vendre {amount} MW",
+    "trends": {
+      "up": "En hausse",
+      "down": "En baisse",
+      "stable": "Stable"
+    }
+  },
+  "research": {
+    "title": "Laboratoire de Recherche",
+    "cost": "Coût",
+    "start": "Démarrer la Recherche",
+    "completed": "Recherche Terminée",
+    "required_energy": "Énergie Requise"
+  },
   "powerPlants": {
     "coal": {
       "name": "Centrale à Charbon",
