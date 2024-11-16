@@ -46,7 +46,7 @@ export const useGameState = () => {
 
     setEnvironment({
       pollutionLevel: totalPollution,
-      renewablePercentage: totalProduction > 0 ? (renewablePercentage / totalProduction) * 100 : 0,
+      renewablePercentage: totalProduction > 0 ? (renewableProduction / totalProduction) * 100 : 0,
       visualState: totalPollution > 50 ? 'polluted' : totalPollution < 20 ? 'clean' : 'neutral',
       globalDemand: market.demand,
       marketPrice: market.currentPrice,
