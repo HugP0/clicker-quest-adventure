@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { PowerPlant, EnvironmentalState } from "@/types/powerPlant";
+import { PowerPlant, EnvironmentalState, MarketState, ResearchProject } from "@/types/powerPlant";
 import { toast } from "sonner";
 
 const INITIAL_POWER_PLANTS: PowerPlant[] = [
@@ -14,7 +14,10 @@ const INITIAL_POWER_PLANTS: PowerPlant[] = [
     owned: 0,
     upgradeLevel: 1,
     upgradeCost: 50,
-    autoProducing: false
+    autoProducing: false,
+    efficiency: 0.8,
+    marketDemand: 100,
+    profitPerMW: 1.2
   },
   {
     id: "solar",
@@ -27,7 +30,10 @@ const INITIAL_POWER_PLANTS: PowerPlant[] = [
     owned: 0,
     upgradeLevel: 1,
     upgradeCost: 75,
-    autoProducing: false
+    autoProducing: false,
+    efficiency: 0.6,
+    marketDemand: 150,
+    profitPerMW: 2.0
   },
   {
     id: "nuclear",
@@ -40,7 +46,10 @@ const INITIAL_POWER_PLANTS: PowerPlant[] = [
     owned: 0,
     upgradeLevel: 1,
     upgradeCost: 300,
-    autoProducing: false
+    autoProducing: false,
+    efficiency: 0.9,
+    marketDemand: 80,
+    profitPerMW: 3.0
   },
   {
     id: "wind",
@@ -53,7 +62,10 @@ const INITIAL_POWER_PLANTS: PowerPlant[] = [
     owned: 0,
     upgradeLevel: 1,
     upgradeCost: 40,
-    autoProducing: false
+    autoProducing: false,
+    efficiency: 0.7,
+    marketDemand: 120,
+    profitPerMW: 1.5
   },
   {
     id: "geothermal",
@@ -66,7 +78,10 @@ const INITIAL_POWER_PLANTS: PowerPlant[] = [
     owned: 0,
     upgradeLevel: 1,
     upgradeCost: 225,
-    autoProducing: false
+    autoProducing: false,
+    efficiency: 0.85,
+    marketDemand: 110,
+    profitPerMW: 2.5
   },
   {
     id: "hydro",
@@ -79,7 +94,32 @@ const INITIAL_POWER_PLANTS: PowerPlant[] = [
     owned: 0,
     upgradeLevel: 1,
     upgradeCost: 150,
-    autoProducing: false
+    autoProducing: false,
+    efficiency: 0.8,
+    marketDemand: 90,
+    profitPerMW: 1.8
+  }
+];
+
+const INITIAL_MARKET_STATE: MarketState = {
+  currentPrice: 1.0,
+  demand: 100,
+  trend: 'stable',
+  history: Array.from({ length: 10 }, (_, i) => ({
+    timestamp: Date.now() - (i * 1000),
+    price: 1.0
+  }))
+};
+
+const INITIAL_RESEARCH_PROJECTS: ResearchProject[] = [
+  {
+    id: "efficiency1",
+    name: "Enhanced Efficiency",
+    description: "Improve power plant efficiency by 10%",
+    cost: 1000,
+    requiredEnergy: 500,
+    completed: false,
+    unlocks: ["efficiency2"]
   }
 ];
 
@@ -88,8 +128,13 @@ export const useGameState = () => {
   const [environment, setEnvironment] = useState<EnvironmentalState>({
     pollutionLevel: 0,
     renewablePercentage: 0,
-    visualState: 'neutral'
+    visualState: 'neutral',
+    globalDemand: 100,
+    marketPrice: 1.0,
+    publicOpinion: 50
   });
+  const [market, setMarket] = useState<MarketState>(INITIAL_MARKET_STATE);
+  const [researchProjects, setResearchProjects] = useState<ResearchProject[]>(INITIAL_RESEARCH_PROJECTS);
   const [money, setMoney] = useState(50);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -112,11 +157,14 @@ export const useGameState = () => {
     setEnvironment({
       pollutionLevel: totalPollution,
       renewablePercentage: totalProduction > 0 ? (renewableProduction / totalProduction) * 100 : 0,
-      visualState: totalPollution > 50 ? 'polluted' : totalPollution < 20 ? 'clean' : 'neutral'
+      visualState: totalPollution > 50 ? 'polluted' : totalPollution < 20 ? 'clean' : 'neutral',
+      globalDemand: 100,
+      marketPrice: 1.0,
+      publicOpinion: 50
     });
 
     if (totalProduction > 0) {
-      const moneyGenerated = Math.floor(totalProduction * 0.5); // Augmentation du gain d'argent
+      const moneyGenerated = Math.floor(totalProduction * 0.5);
       setMoney(prev => prev + moneyGenerated);
     }
   };
@@ -125,6 +173,22 @@ export const useGameState = () => {
     const interval = setInterval(calculateEnvironmentalImpact, 1000);
     return () => clearInterval(interval);
   }, [powerPlants]);
+
+  const sellEnergy = (amount: number) => {
+    const profit = amount * market.currentPrice;
+    setMoney(prev => prev + profit);
+    toast.success(`Sold ${amount} MW for $${profit.toFixed(2)}`);
+  };
+
+  const startResearch = (projectId: string) => {
+    const project = researchProjects.find(p => p.id === projectId);
+    if (!project || project.completed) return;
+
+    setResearchProjects(prev => prev.map(p => 
+      p.id === projectId ? { ...p, completed: true } : p
+    ));
+    toast.success(`Research completed: ${project.name}`);
+  };
 
   const toggleAutoProduction = (id: string) => {
     setPowerPlants(prev => prev.map(plant => 
@@ -135,7 +199,7 @@ export const useGameState = () => {
     
     const plant = powerPlants.find(p => p.id === id);
     if (plant) {
-      toast.success(`${plant.name} ${!plant.autoProducing ? 'activé' : 'désactivé'} !`);
+      toast.success(`${plant.name} ${!plant.autoProducing ? 'enabled' : 'disabled'}!`);
     }
   };
 
@@ -154,7 +218,7 @@ export const useGameState = () => {
         : plant
     ));
     
-    toast.success(`Nouvelle ${plant.name} construite !`);
+    toast.success(`New ${plant.name} built!`);
   };
 
   const upgradePowerPlant = (id: string) => {
@@ -172,7 +236,7 @@ export const useGameState = () => {
         : plant
     ));
     
-    toast.success(`${plant.name} améliorée au niveau ${plant.upgradeLevel + 1} !`);
+    toast.success(`${plant.name} upgraded to level ${plant.upgradeLevel + 1}!`);
   };
 
   return {
@@ -180,8 +244,12 @@ export const useGameState = () => {
     environment,
     money,
     isLoading,
+    market,
+    researchProjects,
     purchasePowerPlant,
     upgradePowerPlant,
-    toggleAutoProduction
+    toggleAutoProduction,
+    sellEnergy,
+    startResearch
   };
 };
